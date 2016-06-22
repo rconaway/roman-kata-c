@@ -16,3 +16,36 @@ char* subtract(char* difference, int differenceLen, char* minuend, char* subtrah
     return difference;
 }
 
+int digit_to_arabic(char digit) {
+    switch(digit) {
+        case 'I': return 1;
+        case 'V': return 5;
+        case 'X': return 10;
+        case 'L': return 50;
+        case 'C': return 100;
+        case 'D': return 500;
+        case 'M': return 1000;
+    }
+    return -1;
+}
+
+int sum_digits(ARABIC *arabic, ROMAN roman) {
+    char* cp;
+    int digit;
+
+    *arabic = 0;
+
+    for (cp = roman; *cp; cp++) {
+        digit = digit_to_arabic(*cp);
+        if (digit < 0) {
+            return INVALID_ROMAN_NUMBER;
+        }
+        *arabic += digit;
+    }
+
+    return OK;
+}
+
+
+
+
