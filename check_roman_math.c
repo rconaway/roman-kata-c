@@ -54,17 +54,17 @@ END_TEST
 
 Suite* suite(void) {
     Suite * s;
-    TCase *tc;
+    TCase *tc_sum_digits;
 
     s = suite_create("Roman Math Suite");
-    tc = tcase_create("Sum digits of Roman numeral");
+    tc_sum_digits = tcase_create("Sum digits of Roman numeral");
 
-    tcase_add_test(tc, rejects_non_roman_numbers);
-    tcase_add_test(tc, accepts_a_roman_number_with_all_valid_digits);
-    tcase_add_test(tc, converts_each_digit_to_its_correct_arabic_value);
-    tcase_add_test(tc, converts_sequence_of_digits_by_adding_their_corresponding_arabic_values);
+    tcase_add_test(tc_sum_digits, rejects_non_roman_numbers);
+    tcase_add_test(tc_sum_digits, accepts_a_roman_number_with_all_valid_digits);
+    tcase_add_test(tc_sum_digits, converts_each_digit_to_its_correct_arabic_value);
+    tcase_add_test(tc_sum_digits, converts_sequence_of_digits_by_adding_their_corresponding_arabic_values);
 
-    suite_add_tcase(s, tc);
+    suite_add_tcase(s, tc_sum_digits);
 
     return s;
 }
