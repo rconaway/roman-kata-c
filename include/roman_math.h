@@ -14,6 +14,8 @@ typedef int ARABIC;
 
 int sum_digits(ARABIC* arabic, ROMAN roman);
 
+int simplify_roman(ROMAN simplified, ROMAN complex);
+
 char* add(char* sum, int sumLen, char* addend1, char* addend2);
 
 char* subtract(char* difference, int differenceLen, char* minuend, char* subtrahend);

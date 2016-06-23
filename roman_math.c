@@ -46,6 +46,43 @@ int sum_digits(ARABIC *arabic, ROMAN roman) {
     return OK;
 }
 
+struct compression_table_elt {
+    char* compressed;
+    char* uncompressed;
+} compression_table[] = {
+        {"IV", "IIII"},
+        {"IX", "VIIII"},
+        {"XL", "XXXX"},
+        {"XC", "LXXXX"},
+        {"CD", "CCCC"},
+        {"CM", "DCCCC"},
+        {NULL, NULL}
+};
+
+int simplify_roman(ROMAN simplified, ROMAN complex) {
+    char *cp, *sp;
+    struct compression_table_elt* te;
+
+    sp = simplified;
+    cp = complex;
+
+    outer:
+    while(*cp) {
+        for (te = compression_table; te->compressed; te++) {
+            if (strncmp(cp, te->compressed, strlen(te->compressed)) == 0) {
+                strcpy(sp, te->uncompressed);
+                sp += strlen(te->uncompressed);
+                cp += strlen(te->compressed);
+                goto outer;
+            }
+        }
+
+        *(cp++) = *(sp++);
+    }
+
+    *sp = 0;
+    return OK;
+}
 
 
 

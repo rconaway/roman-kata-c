@@ -52,19 +52,43 @@ START_TEST(converts_sequence_of_digits_by_adding_their_corresponding_arabic_valu
 }
 END_TEST
 
+START_TEST(lesser_number_modifies_larger_number) {
+    rc = simplify_roman(roman, "IV");
+    ck_assert_str_eq(roman, "IIII");
+
+    rc = simplify_roman(roman, "IX");
+    ck_assert_str_eq(roman, "VIIII");
+
+    rc = simplify_roman(roman, "XL");
+    ck_assert_str_eq(roman, "XXXX");
+
+    rc = simplify_roman(roman, "XC");
+    ck_assert_str_eq(roman, "LXXXX");
+
+    rc = simplify_roman(roman, "CD");
+    ck_assert_str_eq(roman, "CCCC");
+
+    rc = simplify_roman(roman, "CM");
+    ck_assert_str_eq(roman, "DCCCC");
+}
+END_TEST
+
 Suite* suite(void) {
     Suite * s;
-    TCase *tc_sum_digits;
+    TCase *tc_sum_digits, *tc_simplify_number;
 
     s = suite_create("Roman Math Suite");
-    tc_sum_digits = tcase_create("Sum digits of Roman numeral");
 
+    tc_sum_digits = tcase_create("Sum digits of Roman numeral");
     tcase_add_test(tc_sum_digits, rejects_non_roman_numbers);
     tcase_add_test(tc_sum_digits, accepts_a_roman_number_with_all_valid_digits);
     tcase_add_test(tc_sum_digits, converts_each_digit_to_its_correct_arabic_value);
     tcase_add_test(tc_sum_digits, converts_sequence_of_digits_by_adding_their_corresponding_arabic_values);
-
     suite_add_tcase(s, tc_sum_digits);
+
+    tc_simplify_number = tcase_create("Simplify Roman numeral to a simple sequence of digits");
+    tcase_add_test(tc_simplify_number, lesser_number_modifies_larger_number);
+    suite_add_tcase(s, tc_simplify_number);
 
     return s;
 }
