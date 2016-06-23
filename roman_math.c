@@ -84,5 +84,21 @@ int simplify_roman(ROMAN simplified, ROMAN complex) {
     return OK;
 }
 
+char* valid_digits = "IVXLCDM";
 
+bool validate_digits(ROMAN number) {
+    char* cp;
+
+    for (cp = number; *cp; cp++) {
+        if (strchr(number, *cp) == NULL) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool validate_roman(ROMAN number) {
+    return validate_digits(number);
+}
 

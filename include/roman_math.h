@@ -8,9 +8,13 @@
 #define OK 0
 #define INVALID_ROMAN_NUMBER 1
 
+#include <stdbool.h>
+
 typedef char ROMAN[50];
 
 typedef int ARABIC;
+
+bool validate_roman(ROMAN number);
 
 int sum_digits(ARABIC* arabic, ROMAN roman);
 

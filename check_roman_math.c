@@ -10,15 +10,12 @@ ARABIC arabic;
 ROMAN roman;
 
 START_TEST(rejects_non_roman_numbers) {
-    rc = sum_digits(&arabic, "A");
-    ck_assert_int_eq(rc, INVALID_ROMAN_NUMBER);
+    ck_assert(validate_roman("A"));
 }
-
 END_TEST
 
 START_TEST(accepts_a_roman_number_with_all_valid_digits) {
-    rc = sum_digits(&arabic, "IVXLCDM");
-    ck_assert_int_eq(rc, 0);
+    ck_assert(validate_roman("IVXLCDM"));
 }
 END_TEST
 
@@ -74,23 +71,26 @@ START_TEST(lesser_number_modifies_larger_number) {
 END_TEST
 
 Suite* suite(void) {
-    Suite * s;
-    TCase *tc_sum_digits, *tc_simplify_number;
+    Suite * suite;
+    TCase *tc_validate_roman, *tc_sum_digits, *tc_simplify_number;
 
-    s = suite_create("Roman Math Suite");
+    suite = suite_create("Roman Math Suite");
 
-    tc_sum_digits = tcase_create("Sum digits of Roman numeral");
-    tcase_add_test(tc_sum_digits, rejects_non_roman_numbers);
-    tcase_add_test(tc_sum_digits, accepts_a_roman_number_with_all_valid_digits);
+    tc_validate_roman = tcase_create("Validate Roman number");
+    tcase_add_test(tc_validate_roman, rejects_non_roman_numbers);
+    tcase_add_test(tc_validate_roman, accepts_a_roman_number_with_all_valid_digits);
+    suite_add_tcase(suite, tc_validate_roman);
+
+    tc_sum_digits = tcase_create("Sum digits of Roman number");
     tcase_add_test(tc_sum_digits, converts_each_digit_to_its_correct_arabic_value);
     tcase_add_test(tc_sum_digits, converts_sequence_of_digits_by_adding_their_corresponding_arabic_values);
-    suite_add_tcase(s, tc_sum_digits);
+    suite_add_tcase(suite, tc_sum_digits);
 
     tc_simplify_number = tcase_create("Simplify Roman numeral to a simple sequence of digits");
     tcase_add_test(tc_simplify_number, lesser_number_modifies_larger_number);
-    suite_add_tcase(s, tc_simplify_number);
+    suite_add_tcase(suite, tc_simplify_number);
 
-    return s;
+    return suite;
 }
 
 int main(void) {
