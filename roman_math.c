@@ -98,7 +98,26 @@ bool validate_digits(ROMAN number) {
     return true;
 }
 
+char* prohibited_repetitions[] = {
+        "IIII", "XXXX", "CCCC", "VV", "LL", "DD", NULL
+};
+
+bool validate_repetitions(ROMAN number) {
+    char * cp;
+    char ** rp;
+
+    for (cp = number; *cp; cp++) {
+        for (rp = prohibited_repetitions; *rp; rp++) {
+            if (strncmp(cp, *rp, strlen(*rp)) == 0) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 bool validate_roman(ROMAN number) {
-    return validate_digits(number);
+    return validate_digits(number) &&
+            validate_repetitions(number);
 }
 

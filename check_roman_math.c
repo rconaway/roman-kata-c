@@ -19,6 +19,21 @@ START_TEST(accepts_a_roman_number_with_all_valid_digits) {
 }
 END_TEST
 
+START_TEST(unit_digits_may_not_have_more_than_3_repetitions) {
+    ck_assert(!validate_roman("IIII"));
+    ck_assert(!validate_roman("XXXX"));
+    ck_assert(!validate_roman("CCCC"));
+}
+END_TEST
+
+START_TEST(five_digits_may_not_have_repetitions) {
+    ck_assert(!validate_roman("VV"));
+    ck_assert(!validate_roman("LL"));
+    ck_assert(!validate_roman("DD"));
+
+}
+END_TEST
+
 START_TEST(converts_each_digit_to_its_correct_arabic_value) {
     rc = sum_digits(&arabic, "I");
     ck_assert_int_eq(arabic, 1);
@@ -79,6 +94,8 @@ Suite* suite(void) {
     tc_validate_roman = tcase_create("Validate Roman number");
     tcase_add_test(tc_validate_roman, rejects_non_roman_numbers);
     tcase_add_test(tc_validate_roman, accepts_a_roman_number_with_all_valid_digits);
+    tcase_add_test(tc_validate_roman, unit_digits_may_not_have_more_than_3_repetitions);
+    tcase_add_test(tc_validate_roman, five_digits_may_not_have_repetitions);
     suite_add_tcase(suite, tc_validate_roman);
 
     tc_sum_digits = tcase_create("Sum digits of Roman number");
