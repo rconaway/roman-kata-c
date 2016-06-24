@@ -52,8 +52,51 @@ STATUS arabic_to_simplified_roman(ROMAN roman, ARABIC arabic) {
     return OK;
 }
 
+struct compression_table_elt {
+    char* compressed;
+    char* uncompressed;
+} compression_table[] = {
+        {"IV", "IIII"},
+        {"IX", "VIIII"},
+        {"XL", "XXXX"},
+        {"XC", "LXXXX"},
+        {"CD", "CCCC"},
+        {"CM", "DCCCC"},
+        {NULL, NULL}
+};
+
+struct compression_table_elt* findUncompressed(char* uncompressed) {
+    struct compression_table_elt* te;
+
+    for (te = compression_table; te->compressed != NULL; te++) {
+        if (strncmp(uncompressed, te->uncompressed, strlen(te->uncompressed)) == 0) {
+            return te;
+        }
+    }
+    return NULL;
+}
+
 STATUS simplified_to_compressed(ROMAN compressed, ROMAN simplified) {
-    return NOT_IMPLEMENTED;
+    char *cp, *sp;
+    struct compression_table_elt* te;
+
+    sp = simplified;
+    cp = compressed;
+
+    while(*sp) {
+        te = findUncompressed(sp);
+        if (te != NULL) {
+            strcpy(cp, te->compressed);
+            sp += strlen(te->uncompressed);
+            cp += strlen(te->compressed);
+        } else {
+            *(cp++) = *(sp++);
+        }
+    }
+
+    *cp = 0;
+    return OK;
+
 }
 
 STATUS to_roman(ROMAN roman, ARABIC arabic) {

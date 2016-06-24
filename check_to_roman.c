@@ -45,6 +45,25 @@ START_TEST(converts_birthday) {
     ASSERT_ARABIC_TO_SIMPLIFIED_ROMAN("MDCCCCLVIII", 1958);
 } END_TEST
 
+#define ASSERT_SIMPLIFIED_TO_COMPRESSED(c, s) ASSERT_OK(simplified_to_compressed(roman, s)); ck_assert_str_eq(c, roman)
+
+START_TEST(recognizes_single_compression) {
+    ASSERT_SIMPLIFIED_TO_COMPRESSED("IV", "IIII");
+    ASSERT_SIMPLIFIED_TO_COMPRESSED("IX", "VIIII");
+    ASSERT_SIMPLIFIED_TO_COMPRESSED("XL", "XXXX");
+    ASSERT_SIMPLIFIED_TO_COMPRESSED("XC", "LXXXX");
+    ASSERT_SIMPLIFIED_TO_COMPRESSED("CD", "CCCC");
+    ASSERT_SIMPLIFIED_TO_COMPRESSED("CM", "DCCCC");
+} END_TEST
+
+START_TEST(recognizes_multiple_compressions) {
+    ASSERT_SIMPLIFIED_TO_COMPRESSED("MMMMCDXLIV", "MMMMCCCCXXXXIIII");
+} END_TEST
+
+START_TEST(compresses_birthday) {
+    ASSERT_SIMPLIFIED_TO_COMPRESSED("MCMLVIII", "MDCCCCLVIII");
+} END_TEST
+
 Suite * suite(void) {
     Suite * suite;
     TCase *tc_validate_arabic, *tc_arabic_to_simplified_roman, *tc_simplified_to_compressed, *tc_to_roman;
@@ -64,6 +83,9 @@ Suite * suite(void) {
     suite_add_tcase(suite, tc_arabic_to_simplified_roman);
 
     tc_simplified_to_compressed = tcase_create("Simplified Roman to compressed");
+    tcase_add_test(tc_simplified_to_compressed, recognizes_single_compression);
+    tcase_add_test(tc_simplified_to_compressed, recognizes_multiple_compressions);
+    tcase_add_test(tc_simplified_to_compressed, compresses_birthday);
     suite_add_tcase(suite, tc_simplified_to_compressed);
 
     tc_to_roman = tcase_create("To Roman");
