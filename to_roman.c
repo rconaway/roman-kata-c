@@ -52,10 +52,7 @@ STATUS arabic_to_simplified_roman(ROMAN roman, ARABIC arabic) {
     return OK;
 }
 
-struct compression_table_elt {
-    char* compressed;
-    char* uncompressed;
-} compression_table[] = {
+struct compression_table_elt r_compression_table[] = {
         {"IV", "IIII"},
         {"IX", "VIIII"},
         {"XL", "XXXX"},
@@ -68,7 +65,7 @@ struct compression_table_elt {
 struct compression_table_elt* findUncompressed(char* uncompressed) {
     struct compression_table_elt* te;
 
-    for (te = compression_table; te->compressed != NULL; te++) {
+    for (te = r_compression_table; te->compressed != NULL; te++) {
         if (strncmp(uncompressed, te->uncompressed, strlen(te->uncompressed)) == 0) {
             return te;
         }

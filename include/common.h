@@ -6,4 +6,9 @@ typedef int ARABIC;
 typedef enum {OK, INVALID_ROMAN_NUMBER, NOT_IMPLEMENTED,
     ARABIC_CANNOT_BE_NEGATIVE} STATUS;
 
+struct compression_table_elt {
+    char* compressed;
+    char* uncompressed;
+};
+
 #endif

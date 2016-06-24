@@ -1,4 +1,4 @@
-#include "include/to_roman.h"
+#include "include/roman_math.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,20 +12,20 @@ ROMAN roman;
 #define ASSERT_ERROR(ex, error) ck_assert_int_eq(ex, error)
 
 START_TEST(calculate_year_from_birthday_and_age) {
-//    ASSERT_OK(add(roman, "MCMLVIII", "LVIII"));
-//    ck_assert_str_eq(roman, "MMXVI");
+    ASSERT_OK(add(roman, "MCMLVIII", "LVIII"));
+    ck_assert_str_eq(roman, "MMXVI");
 } END_TEST
 
 START_TEST(calculate_age_from_current_and_birthday) {
-//    ASSERT_OK(subtract(roman, "MMXVI", "MCMLVIII"));
-//    ck_assert_str_eq(roman, "LVIII");
+    ASSERT_OK(subtract(roman, "MMXVI", "MCMLVIII"));
+    ck_assert_str_eq(roman, "LVIII");
 } END_TEST
 
 Suite * suite(void) {
     Suite * suite;
     TCase *tc_add, *tc_subtract;
 
-    suite = suite_create("To Roman");
+    suite = suite_create("Roman Math");
 
     tc_add = tcase_create("Add Roman numbers");
     tcase_add_test(tc_add, calculate_year_from_birthday_and_age);

@@ -1,11 +1,12 @@
-#include "include/to_arabic.h"
+#include "include/roman_math.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 int main(int argc, char** argv) {
-
-    char result[50];
+    STATUS status;
+    ROMAN result;
 
     if (argc != 4) {
         printf("Please enter NUMBER + NUMBER or NUMBER - NUMBER\n");
@@ -13,11 +14,20 @@ int main(int argc, char** argv) {
     }
 
     if (strcmp(argv[2], "+") == 0) {
-        add(result, argv[1], argv[3]);
+        status = add(result, argv[1], argv[3]);
+        if (status != OK) {
+            printf("Invalid number\n");
+            return -1;
+        }
     } else if (strcmp(argv[2], "-") == 0) {
-        subtract(result, argv[1], argv[3]);
+        status = subtract(result, argv[1], argv[3]);
+        if (status != OK) {
+            printf("Invalid number\n");
+            return -1;
+        }
     } else {
         printf("Operator must be + or -, found %s\n", argv[2]);
+        return -1;
     }
 
     printf("%s\n", result);

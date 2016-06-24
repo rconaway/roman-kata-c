@@ -1,7 +1,7 @@
 COMPILE = cc -std=c99 -pedantic -Wall -I /usr/local/include -I /usr/include -c
 LINK = cc -L /usr/lib -L /usr/local/lib -l check
 
-all: calculator check_to_arabic
+all: calculator check_to_arabic check_to_roman check_roman_math
 
 test: check_to_arabic check_to_roman check_roman_math
 	./check_to_arabic
@@ -36,13 +36,13 @@ check_roman_math.o: check_roman_math.c include/roman_math.h
 	${COMPILE} check_roman_math.c 
 
 check_roman_math: check_roman_math.o roman_math.o
-	${LINK} check_roman_math.o roman_math.o -o check_roman_math
+	${LINK} check_roman_math.o roman_math.o to_roman.o to_arabic.o -o check_roman_math
 
 calculator.o: calculator.c include/to_arabic.h
 	${COMPILE} calculator.c 
 
-calculator: calculator.o to_arabic.o
-	${LINK} calculator.o to_arabic.o -o calculator
+calculator: calculator.o to_arabic.o to_roman.o roman_math.o
+	${LINK} calculator.o to_arabic.o to_roman.o roman_math.o -o calculator
 
 clean:
 	rm -f *.o check_to_arabic calculator

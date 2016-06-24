@@ -76,7 +76,7 @@ Suite* suite(void) {
     Suite * suite;
     TCase *tc_validate_roman, *tc_sum_digits, *tc_simplify_roman, *tc_to_arabic;
 
-    suite = suite_create("Roman Math Suite");
+    suite = suite_create("To Arabic");
 
     tc_validate_roman = tcase_create("Validate Roman number");
     tcase_add_test(tc_validate_roman, rejects_non_roman_digits);

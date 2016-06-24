@@ -4,20 +4,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-STATUS add(char* sum, int sumLen, char* addend1, char* addend2) {
-    strcpy(sum, addend1);
-    strcat(sum, " + ");
-    strcat(sum, addend2);
-    return OK;
-}
-
-STATUS subtract(char* difference, int differenceLen, char* minuend, char* subtrahend) {
-    strcpy(difference, minuend);
-    strcat(difference, " - ");
-    strcat(difference, subtrahend);
-    return OK;
-}
-
 int digit_to_arabic(char digit) {
     switch(digit) {
         case 'I': return 1;
@@ -48,10 +34,7 @@ STATUS sum_digits(ARABIC *arabic, ROMAN roman) {
     return OK;
 }
 
-struct compression_table_elt {
-    char* compressed;
-    char* uncompressed;
-} compression_table[] = {
+struct compression_table_elt a_compression_table[] = {
         {"IV", "IIII"},
         {"IX", "VIIII"},
         {"XL", "XXXX"},
@@ -64,7 +47,7 @@ struct compression_table_elt {
 struct compression_table_elt* findCompression(char* compressed) {
     struct compression_table_elt* te;
 
-    for (te = compression_table; te->compressed != NULL; te++) {
+    for (te = a_compression_table; te->compressed != NULL; te++) {
         if (strncmp(compressed, te->compressed, strlen(te->compressed)) == 0) {
             return te;
         }
