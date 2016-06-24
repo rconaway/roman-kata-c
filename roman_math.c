@@ -1,19 +1,20 @@
 #include "include/roman_math.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
-char* add(char* sum, int sumLen, char* addend1, char* addend2) {
+STATUS add(char* sum, int sumLen, char* addend1, char* addend2) {
     strcpy(sum, addend1);
     strcat(sum, " + ");
     strcat(sum, addend2);
-    return sum;
+    return OK;
 }
 
-char* subtract(char* difference, int differenceLen, char* minuend, char* subtrahend) {
+STATUS subtract(char* difference, int differenceLen, char* minuend, char* subtrahend) {
     strcpy(difference, minuend);
     strcat(difference, " - ");
     strcat(difference, subtrahend);
-    return difference;
+    return OK;
 }
 
 int digit_to_arabic(char digit) {
@@ -29,7 +30,7 @@ int digit_to_arabic(char digit) {
     return -1;
 }
 
-int sum_digits(ARABIC *arabic, ROMAN roman) {
+STATUS sum_digits(ARABIC *arabic, ROMAN roman) {
     char* cp;
     int digit;
 
@@ -59,25 +60,33 @@ struct compression_table_elt {
         {NULL, NULL}
 };
 
-int simplify_roman(ROMAN simplified, ROMAN complex) {
+struct compression_table_elt* findCompression(char* compressed) {
+    struct compression_table_elt* te;
+
+    for (te = compression_table; te->compressed != NULL; te++) {
+        if (strncmp(compressed, te->compressed, strlen(te->compressed)) == 0) {
+            return te;
+        }
+    }
+    return NULL;
+}
+
+STATUS simplify_roman(ROMAN simplified, ROMAN complex) {
     char *cp, *sp;
     struct compression_table_elt* te;
 
     sp = simplified;
     cp = complex;
 
-    outer:
     while(*cp) {
-        for (te = compression_table; te->compressed; te++) {
-            if (strncmp(cp, te->compressed, strlen(te->compressed)) == 0) {
-                strcpy(sp, te->uncompressed);
-                sp += strlen(te->uncompressed);
-                cp += strlen(te->compressed);
-                goto outer;
-            }
+        te = findCompression(cp);
+        if (te != NULL) {
+            strcpy(sp, te->uncompressed);
+            sp += strlen(te->uncompressed);
+            cp += strlen(te->compressed);
+        } else {
+            *(sp++) = *(cp++);
         }
-
-        *(cp++) = *(sp++);
     }
 
     *sp = 0;
@@ -90,7 +99,7 @@ bool validate_digits(ROMAN number) {
     char* cp;
 
     for (cp = number; *cp; cp++) {
-        if (strchr(number, *cp) == NULL) {
+        if (strchr(valid_digits, *cp) == NULL) {
             return false;
         }
     }
@@ -116,8 +125,26 @@ bool validate_repetitions(ROMAN number) {
     return true;
 }
 
-bool validate_roman(ROMAN number) {
-    return validate_digits(number) &&
-            validate_repetitions(number);
+STATUS validate_roman(ROMAN number) {
+    if (validate_digits(number) && validate_repetitions(number)) {
+        return OK;
+    } else {
+        return INVALID_ROMAN_NUMBER;
+    }
 }
 
+STATUS to_arabic(ARABIC* arabic, ROMAN roman) {
+    STATUS status;
+    ROMAN simple;
+
+    status = validate_roman(roman);
+    if (status == OK) {
+        status = simplify_roman(simple, roman);
+    }
+
+    if (status == OK) {
+        status = sum_digits(arabic, simple);
+    }
+
+    return status;
+}

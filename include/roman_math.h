@@ -2,11 +2,8 @@
 // Created by Robert Conaway on 6/21/16.
 //
 
-#ifndef ROMANNUMERALS_ROMANNUMERALS_H
-#define ROMANNUMERALS_ROMANNUMERALS_H
-
-#define OK 0
-#define INVALID_ROMAN_NUMBER 1
+#ifndef ROMAN_MATH_H
+#define ROMAN_MATH_H
 
 #include <stdbool.h>
 
@@ -14,16 +11,13 @@ typedef char ROMAN[50];
 
 typedef int ARABIC;
 
-bool validate_roman(ROMAN number);
+typedef enum {OK, INVALID_ROMAN_NUMBER} STATUS;
 
-int sum_digits(ARABIC* arabic, ROMAN roman);
+STATUS validate_roman(ROMAN number);
+STATUS sum_digits(ARABIC* arabic, ROMAN roman);
+STATUS simplify_roman(ROMAN simplified, ROMAN complex);
+STATUS to_arabic(ARABIC* arabic, ROMAN roman);
+STATUS add(char* sum, int sumLen, char* addend1, char* addend2);
+STATUS subtract(char* difference, int differenceLen, char* minuend, char* subtrahend);
 
-int simplify_roman(ROMAN simplified, ROMAN complex);
-
-char* add(char* sum, int sumLen, char* addend1, char* addend2);
-
-char* subtract(char* difference, int differenceLen, char* minuend, char* subtrahend);
-
-int prompt(int argc, char** argv);
-
-#endif //ROMANNUMERALS_ROMANNUMERALS_H
+#endif //ROMAN_MATH_H

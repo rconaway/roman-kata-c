@@ -9,90 +9,76 @@ int rc;
 ARABIC arabic;
 ROMAN roman;
 
-START_TEST(rejects_non_roman_numbers) {
-    ck_assert(validate_roman("A"));
-}
-END_TEST
+#define ASSERT_OK(ex) ck_assert_int_eq(ex, OK)
+#define ASSERT_ERROR(ex, error) ck_assert_int_eq(ex, error)
+
+#define ASSERT_VALID_ROMAN(number) ASSERT_OK(validate_roman(number))
+#define ASSERT_INVALID_ROMAN(number) ASSERT_ERROR(validate_roman(number), INVALID_ROMAN_NUMBER)
+
+START_TEST(rejects_non_roman_digits) {
+    ASSERT_INVALID_ROMAN("A");
+} END_TEST
 
 START_TEST(accepts_a_roman_number_with_all_valid_digits) {
-    ck_assert(validate_roman("IVXLCDM"));
-}
-END_TEST
+    ASSERT_VALID_ROMAN("IVXLCDM");
+} END_TEST
 
 START_TEST(unit_digits_may_not_have_more_than_3_repetitions) {
-    ck_assert(!validate_roman("IIII"));
-    ck_assert(!validate_roman("XXXX"));
-    ck_assert(!validate_roman("CCCC"));
-}
-END_TEST
+    ASSERT_INVALID_ROMAN("IIII");
+    ASSERT_INVALID_ROMAN("XXXX");
+    ASSERT_INVALID_ROMAN("CCCC");
+} END_TEST
 
 START_TEST(five_digits_may_not_have_repetitions) {
-    ck_assert(!validate_roman("VV"));
-    ck_assert(!validate_roman("LL"));
-    ck_assert(!validate_roman("DD"));
+    ASSERT_INVALID_ROMAN("VV");
+    ASSERT_INVALID_ROMAN("LL");
+    ASSERT_INVALID_ROMAN("DD");
+} END_TEST
 
-}
-END_TEST
+#define ASSERT_SUM_DIGITS(a, r) rc = sum_digits(&arabic, r); ck_assert_int_eq(arabic, a)
 
 START_TEST(converts_each_digit_to_its_correct_arabic_value) {
-    rc = sum_digits(&arabic, "I");
-    ck_assert_int_eq(arabic, 1);
-
-    rc = sum_digits(&arabic, "V");
-    ck_assert_int_eq(arabic, 5);
-
-    rc = sum_digits(&arabic, "X");
-    ck_assert_int_eq(arabic, 10);
-
-    rc = sum_digits(&arabic, "L");
-    ck_assert_int_eq(arabic, 50);
-
-    rc = sum_digits(&arabic, "C");
-    ck_assert_int_eq(arabic, 100);
-
-    rc = sum_digits(&arabic, "D");
-    ck_assert_int_eq(arabic, 500);
-
-    rc = sum_digits(&arabic, "M");
-    ck_assert_int_eq(arabic, 1000);
-}
-END_TEST
+    ASSERT_SUM_DIGITS(1, "I");
+    ASSERT_SUM_DIGITS(5, "V");
+    ASSERT_SUM_DIGITS(10, "X");
+    ASSERT_SUM_DIGITS(50, "L");
+    ASSERT_SUM_DIGITS(100, "C");
+    ASSERT_SUM_DIGITS(500, "D");
+    ASSERT_SUM_DIGITS(1000, "M");
+} END_TEST
 
 START_TEST(converts_sequence_of_digits_by_adding_their_corresponding_arabic_values) {
-    rc = sum_digits(&arabic, "IVXLCDM");
-    ck_assert_int_eq(arabic, 1666);
-}
-END_TEST
+    ASSERT_SUM_DIGITS(1666, "IVXLCDM");
+} END_TEST
+
+#define ASSERT_SIMPLIFY(s, c) ASSERT_OK(simplify_roman(roman, c)); ck_assert_str_eq(roman, s)
 
 START_TEST(lesser_number_modifies_larger_number) {
-    rc = simplify_roman(roman, "IV");
-    ck_assert_str_eq(roman, "IIII");
+    ASSERT_SIMPLIFY("IIII", "IV");
+    ASSERT_SIMPLIFY("VIIII", "IX");
+    ASSERT_SIMPLIFY("XXXX", "XL");
+    ASSERT_SIMPLIFY("LXXXX", "XC");
+    ASSERT_SIMPLIFY("CCCC", "CD");
+    ASSERT_SIMPLIFY("DCCCC", "CM");
+} END_TEST
 
-    rc = simplify_roman(roman, "IX");
-    ck_assert_str_eq(roman, "VIIII");
+START_TEST(simplifies_birthday) {
+    ASSERT_SIMPLIFY("MDCCCCLVIII","MCMLVIII");
+} END_TEST
 
-    rc = simplify_roman(roman, "XL");
-    ck_assert_str_eq(roman, "XXXX");
-
-    rc = simplify_roman(roman, "XC");
-    ck_assert_str_eq(roman, "LXXXX");
-
-    rc = simplify_roman(roman, "CD");
-    ck_assert_str_eq(roman, "CCCC");
-
-    rc = simplify_roman(roman, "CM");
-    ck_assert_str_eq(roman, "DCCCC");
-}
-END_TEST
+START_TEST(converts_birthday_to_arabic) {
+    ASSERT_OK(to_arabic(&arabic, "MCMLVIII"));
+    ck_assert_int_eq(arabic, 1958);
+} END_TEST
 
 Suite* suite(void) {
     Suite * suite;
-    TCase *tc_validate_roman, *tc_sum_digits, *tc_simplify_number;
+    TCase *tc_validate_roman, *tc_sum_digits, *tc_simplify_roman, *tc_to_arabic;
 
     suite = suite_create("Roman Math Suite");
 
     tc_validate_roman = tcase_create("Validate Roman number");
-    tcase_add_test(tc_validate_roman, rejects_non_roman_numbers);
+    tcase_add_test(tc_validate_roman, rejects_non_roman_digits);
     tcase_add_test(tc_validate_roman, accepts_a_roman_number_with_all_valid_digits);
     tcase_add_test(tc_validate_roman, unit_digits_may_not_have_more_than_3_repetitions);
     tcase_add_test(tc_validate_roman, five_digits_may_not_have_repetitions);
@@ -103,9 +89,14 @@ Suite* suite(void) {
     tcase_add_test(tc_sum_digits, converts_sequence_of_digits_by_adding_their_corresponding_arabic_values);
     suite_add_tcase(suite, tc_sum_digits);
 
-    tc_simplify_number = tcase_create("Simplify Roman numeral to a simple sequence of digits");
-    tcase_add_test(tc_simplify_number, lesser_number_modifies_larger_number);
-    suite_add_tcase(suite, tc_simplify_number);
+    tc_simplify_roman = tcase_create("Simplify Roman numeral to a simple sequence of digits");
+    tcase_add_test(tc_simplify_roman, lesser_number_modifies_larger_number);
+    tcase_add_test(tc_simplify_roman, simplifies_birthday);
+    suite_add_tcase(suite, tc_simplify_roman);
+
+    tc_to_arabic = tcase_create("Convert Roman to Arabic");
+    tcase_add_test(tc_to_arabic, converts_birthday_to_arabic);
+    suite_add_tcase(suite, tc_to_arabic);
 
     return suite;
 }
