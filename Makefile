@@ -3,9 +3,10 @@ LINK = cc -L /usr/lib -L /usr/local/lib -l check
 
 all: calculator check_to_arabic
 
-test: check_to_arabic check_to_roman
+test: check_to_arabic check_to_roman check_roman_math
 	./check_to_arabic
 	./check_to_roman
+	./check_roman_math
 
 run: calculator
 	./calculator
@@ -27,6 +28,15 @@ check_to_roman.o: check_to_roman.c include/to_roman.h
 
 check_to_roman: check_to_roman.o to_roman.o
 	${LINK} check_to_roman.o to_roman.o -o check_to_roman
+
+roman_math.o: roman_math.c include/roman_math.h
+	${COMPILE} roman_math.c -o roman_math.o
+
+check_roman_math.o: check_roman_math.c include/roman_math.h
+	${COMPILE} check_roman_math.c 
+
+check_roman_math: check_roman_math.o roman_math.o
+	${LINK} check_roman_math.o roman_math.o -o check_roman_math
 
 calculator.o: calculator.c include/to_arabic.h
 	${COMPILE} calculator.c 
