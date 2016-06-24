@@ -1,4 +1,4 @@
-#include "include/roman_math.h"
+#include "include/to_arabic.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -66,9 +66,10 @@ START_TEST(simplifies_birthday) {
     ASSERT_SIMPLIFY("MDCCCCLVIII","MCMLVIII");
 } END_TEST
 
+#define ASSERT_TO_ARABIC(a, roman) ASSERT_OK(to_arabic(&arabic, roman)); ck_assert_int_eq(arabic, a)
+
 START_TEST(converts_birthday_to_arabic) {
-    ASSERT_OK(to_arabic(&arabic, "MCMLVIII"));
-    ck_assert_int_eq(arabic, 1958);
+    ASSERT_TO_ARABIC(1958, "MCMLVIII");
 } END_TEST
 
 Suite* suite(void) {
