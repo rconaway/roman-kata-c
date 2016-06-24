@@ -6,4 +6,3 @@ Todo:
  Extract "acceptance" tests into separate module.  E.g. birthday tests.
  Move compression table and functions into its own module
  Remove derived artifacts that were accidentally added to git
- 

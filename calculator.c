@@ -13,9 +13,9 @@ int main(int argc, char** argv) {
     }
 
     if (strcmp(argv[2], "+") == 0) {
-        add(result, sizeof(result), argv[1], argv[3]);
+        add(result, argv[1], argv[3]);
     } else if (strcmp(argv[2], "-") == 0) {
-        subtract(result, sizeof(result), argv[1], argv[3]);
+        subtract(result, argv[1], argv[3]);
     } else {
         printf("Operator must be + or -, found %s\n", argv[2]);
     }

@@ -64,6 +64,12 @@ START_TEST(compresses_birthday) {
     ASSERT_SIMPLIFIED_TO_COMPRESSED("MCMLVIII", "MDCCCCLVIII");
 } END_TEST
 
+START_TEST(converts_birthday_from_arabic_to_compressed_roman) {
+    ASSERT_OK(to_roman(roman, 1958));
+    ck_assert_str_eq("MCMLVIII", roman);
+} END_TEST
+
+
 Suite * suite(void) {
     Suite * suite;
     TCase *tc_validate_arabic, *tc_arabic_to_simplified_roman, *tc_simplified_to_compressed, *tc_to_roman;
@@ -89,6 +95,7 @@ Suite * suite(void) {
     suite_add_tcase(suite, tc_simplified_to_compressed);
 
     tc_to_roman = tcase_create("To Roman");
+    tcase_add_test(tc_to_roman, converts_birthday_from_arabic_to_compressed_roman);
     suite_add_tcase(suite, tc_to_roman);
 
     return suite;

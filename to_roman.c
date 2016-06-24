@@ -100,5 +100,17 @@ STATUS simplified_to_compressed(ROMAN compressed, ROMAN simplified) {
 }
 
 STATUS to_roman(ROMAN roman, ARABIC arabic) {
-    return NOT_IMPLEMENTED;
+    STATUS status;
+    ROMAN simplified;
+
+    status = validate_arabic(arabic);
+
+    if (status == OK) {
+        status = arabic_to_simplified_roman(simplified, arabic);
+    }
+    if (status == OK) {
+        status =  simplified_to_compressed(roman, simplified);
+    }
+
+    return OK;
 }
