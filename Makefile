@@ -1,48 +1,25 @@
-COMPILE = cc -std=c99 -pedantic -Wall -I /usr/local/include -I /usr/include -c
-LINK = cc -L /usr/lib -L /usr/local/lib -l check
+CC=gcc
+CFLAGS=-Wall -std=gnu99
+LDLIBS=-pthread -lcheck_pic -lrt -lm
 
-all: calculator check_to_arabic check_to_roman check_roman_math
+all: clean check_to_arabic check_to_roman check_roman_math calculator test
 
-test: check_to_arabic check_to_roman check_roman_math
+test: 
 	./check_to_arabic
 	./check_to_roman
 	./check_roman_math
 
-run: calculator
-	./calculator
+check_to_arabic: 
+	${CC} ${CFLAGS} check_to_arabic.c to_arabic.c -o check_to_arabic ${LDLIBS}
 
-to_arabic.o: to_arabic.c include/to_arabic.h
-	${COMPILE} to_arabic.c -o to_arabic.o
+check_to_roman:  
+	${CC} ${CFLAGS} check_to_roman.c to_roman.c -o check_to_roman ${LDLIBS}
 
-check_to_arabic.o: check_to_arabic.c include/to_arabic.h
-	${COMPILE} check_to_arabic.c 
+check_roman_math:  
+	${CC} ${CFLAGS} check_roman_math.c roman_math.c to_roman.c to_arabic.c -o check_roman_math ${LDLIBS}
 
-check_to_arabic: check_to_arabic.o to_arabic.o
-	${LINK} check_to_arabic.o to_arabic.o -o check_to_arabic
-
-to_roman.o: to_roman.c include/to_roman.h
-	${COMPILE} to_roman.c -o to_roman.o
-
-check_to_roman.o: check_to_roman.c include/to_roman.h
-	${COMPILE} check_to_roman.c 
-
-check_to_roman: check_to_roman.o to_roman.o
-	${LINK} check_to_roman.o to_roman.o -o check_to_roman
-
-roman_math.o: roman_math.c include/roman_math.h
-	${COMPILE} roman_math.c -o roman_math.o
-
-check_roman_math.o: check_roman_math.c include/roman_math.h
-	${COMPILE} check_roman_math.c 
-
-check_roman_math: check_roman_math.o roman_math.o
-	${LINK} check_roman_math.o roman_math.o to_roman.o to_arabic.o -o check_roman_math
-
-calculator.o: calculator.c include/to_arabic.h
-	${COMPILE} calculator.c 
-
-calculator: calculator.o to_arabic.o to_roman.o roman_math.o
-	${LINK} calculator.o to_arabic.o to_roman.o roman_math.o -o calculator
+calculator:  
+	${CC} ${CFLAGS} calculator.c to_roman.c to_arabic.c roman_math.c -o calculator ${LDLIBS}
 
 clean:
-	rm -f *.o check_to_arabic calculator
+	rm -f *.o check_to_arabic check_to_roman check_roman_math calculator

@@ -5,7 +5,6 @@ Todo:
 * More exploratory testing
 * Extract "acceptance" tests into separate module.  E.g. birthday tests.
 * Move compression table and functions into its own module
-* Remove derived artifacts that were accidentally added to git
 * Subtract does not confirm result is >= 0
 * Clean up naming inconsistencies
 * Doesn't reject bad order of digits.  E.g. IIIV
